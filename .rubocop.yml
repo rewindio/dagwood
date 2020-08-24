@@ -1,0 +1,2 @@
+inherit_gem:
+  rewind-ruby-style: rubocop.yml
