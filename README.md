@@ -6,7 +6,7 @@ What does this mean? Let's use an example. When making a sandwich, it is importa
 
 See the features listed below for ways in which we can use this information.
 
-Other examples where Dagwood might be useful are: scheduling Sidekiq jobs to run in a specific order, determining the order in which software packages must be installed on a server, figuring out how long a project might take based on which steps need to be completed first, and many more.
+Dagwood might be useful for scheduling Sidekiq jobs to run in a specific order, determining the order in which software packages must be installed on a server, figuring out how long a project might take based on which steps need to be completed first, and many more use cases.
 
 #### Features:
 **Serial ordering of dependencies**
@@ -28,10 +28,40 @@ graph.parallel_order
 => [[:slice_bread], [:add_smoked_meat, :add_mustard], [:close_sandwich]]
 ```
 
- - Reverse ordering of dependencies
- - Subgraph generation
- - Graph merging
+**Reverse ordering of dependencies**
 
+The `reverse_order` method can be useful in cases where you'd like to apply the opposite order of operations.
+
+```ruby
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+graph.reverse_order
+=> [:close_sandwich, :add_smoked_meat, :add_mustard, :slice_bread]
+```
+
+**Subgraphs**
+
+Perhaps you only care about what is needed to perform the `add_mustard` operation. The `subgraph` method allows you to grab a slice of the DependencyGraph, based on the given node.
+
+
+```ruby
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+subgraph = graph.subgraph :add_mustard
+subgraph.order
+=> [:slice_bread, :add_mustard]
+```
+
+**Graph merging**
+
+The `merge` method allows you to take two DependencyGraphs and merge them. If your two most beloved restaurants have really good sandwich recipes, perhaps you'd like to attempt creating the Ultimate Sandwich by combining the steps for making both?
+
+```ruby
+recipe1 = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+recipe2 = Dagwood::DependencyGraph.new(add_mayo: [:slice_bread], add_turkey: [:slice_bread], close_sandwich: [:add_turkey, :add_pickles])
+
+ultimate_recipe = recipe1.merge(recipe2)
+ultimate_recipe.order
+=> [:slice_bread, :add_mustard, :add_smoked_meat, :add_pickles, :add_mayo, :add_turkey, :close_sandwich]
+```
 
 ## Installation
 
@@ -55,9 +85,6 @@ Or install it yourself as:
 
     $ gem install dagwood
 
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
