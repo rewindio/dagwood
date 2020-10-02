@@ -24,6 +24,10 @@ module Dagwood
       @reverse_order ||= order.reverse
     end
 
+    def parallel_reverse_order
+      parallel_order.reverse
+    end
+
     # Similar to #order, except this will group items that
     # have the same "priority", thus indicating they can be done
     # in parallel.

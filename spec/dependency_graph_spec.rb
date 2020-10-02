@@ -76,6 +76,13 @@ describe Dagwood::DependencyGraph do
     end
   end
 
+  describe '#parallel_reverse_order' do
+    it 'returns reverse order for the parallel_orders' do
+      graph = Dagwood::DependencyGraph.new(item1: %i[], item2: %i[item1], item3: %i[], item4: %i[item3 item5], item5: %i[item3 item6], item6: %i[item1])
+      expect(graph.parallel_reverse_order).to eql [%i[item4], %i[item5], %i[item2 item6], %i[item1 item3]]
+    end
+  end
+
   describe '#subgraph' do
     it 'includes only given node if it has no dependencies' do
       graph = Dagwood::DependencyGraph.new(item1: %i[])
