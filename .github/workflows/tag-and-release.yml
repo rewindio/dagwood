@@ -23,8 +23,8 @@ jobs:
       run: |
         version_file=$(find ./lib -name version.rb)
         version=$(grep VERSION $version_file |cut -f 2 -d= |tr -d \'|tr -d [:space:])
-        echo ::set-output name=version::$version
-        echo ::set-output name=version_tag::v$version
+        echo version=$version >> $GITHUB_OUTPUT
+        echo version_tag=v$version >> $GITHUB_OUTPUT
 
     - name: Tag commit
       uses: tvdias/github-tagger@v0.0.1
