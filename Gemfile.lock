@@ -18,7 +18,7 @@ GEM
     regexp_parser (1.7.1)
     rewind-ruby-style (1.0.10)
       rubocop (>= 0.85, < 0.89)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
