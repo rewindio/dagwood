@@ -137,5 +137,37 @@ describe Dagwood::DependencyGraph do
 
       expect(merged.dependencies).to contain_exactly([:item1, %i[item2]])
     end
+
+    context 'README #merge Example' do 
+      it '#order should return intended result' do
+
+        recipe1 = Dagwood::DependencyGraph.new(
+          add_mustard:      [:slice_bread], 
+          add_smoked_meat:  [:slice_bread], 
+          close_sandwich:   [:add_smoked_meat]
+        )
+
+        recipe2 = Dagwood::DependencyGraph.new(
+          add_mayo:       [:slice_bread], 
+          add_turkey:     [:slice_bread], 
+          close_sandwich: [:add_turkey, :add_pickles]
+        )
+
+        ultimate_recipe = recipe1.merge(recipe2)
+
+        result    = ultimate_recipe.order
+        expected  = [
+          :slice_bread, 
+          :add_mustard, 
+          :add_smoked_meat, 
+          :add_pickles, 
+          :add_mayo, 
+          :add_turkey, 
+          :close_sandwich
+        ]
+
+        expect(result).to   eq(expected)
+      end
+    end
   end
 end
