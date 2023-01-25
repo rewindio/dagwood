@@ -13,19 +13,19 @@ Dagwood might be useful for scheduling Sidekiq jobs to run in a specific order, 
 
 The basic case. Determine the order of dependencies, one item at a time. The `order` method returns an array of dependencies, in the order they need to be resolved.
 ```ruby
-graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_mustard, :add_smoked_meat])
 graph.order
 => [:slice_bread, :add_mustard, :add_smoked_meat, :close_sandwich]
 ```
- 
+
 **Parallel ordering of dependencies**
 
 Sometimes certain dependencies can be resolved at the same time. For example, a friend is helping you make your sandwich and you can both complete certain steps at the same time. The `parallel_order` method functions very similarly to `order`, except the items in the array are "groups" of dependencies which can be resolved in parallel (in this example, `add_smoked_meat` and `add_mustard` can be done at the same time).
 
 ```ruby
-graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_mustard, :add_smoked_meat])
 graph.parallel_order
-=> [[:slice_bread], [:add_smoked_meat, :add_mustard], [:close_sandwich]]
+=> [[:slice_bread], [:add_mustard, :add_smoked_meat], [:close_sandwich]]
 ```
 
 **Reverse ordering of dependencies**
@@ -33,7 +33,7 @@ graph.parallel_order
 The `reverse_order` method can be useful in cases where you'd like to apply the opposite order of operations.
 
 ```ruby
-graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_mustard, :add_smoked_meat])
 graph.reverse_order
 => [:close_sandwich, :add_smoked_meat, :add_mustard, :slice_bread]
 ```
@@ -44,7 +44,7 @@ Perhaps you only care about what is needed to perform the `add_mustard` operatio
 
 
 ```ruby
-graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
+graph = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_mustard, :add_smoked_meat])
 subgraph = graph.subgraph :add_mustard
 subgraph.order
 => [:slice_bread, :add_mustard]
@@ -55,12 +55,12 @@ subgraph.order
 The `merge` method allows you to take two DependencyGraphs and merge them. If your two most beloved restaurants have really good sandwich recipes, perhaps you'd like to attempt creating the Ultimate Sandwich by combining the steps for making both?
 
 ```ruby
-recipe1 = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_smoked_meat])
-recipe2 = Dagwood::DependencyGraph.new(add_mayo: [:slice_bread], add_turkey: [:slice_bread], close_sandwich: [:add_turkey, :add_pickles])
+recipe1 = Dagwood::DependencyGraph.new(add_mustard: [:slice_bread], add_smoked_meat: [:slice_bread], close_sandwich: [:add_mustard, :add_smoked_meat])
+recipe2 = Dagwood::DependencyGraph.new(add_mayo: [:slice_bread], add_turkey: [:slice_bread], close_sandwich: [:add_mayo, :add_turkey, :add_pickles])
 
 ultimate_recipe = recipe1.merge(recipe2)
 ultimate_recipe.order
-=> [:slice_bread, :add_mustard, :add_smoked_meat, :add_pickles, :add_mayo, :add_turkey, :close_sandwich]
+=> [:slice_bread, :add_mustard, :add_smoked_meat, :add_mayo, :add_pickles, :add_turkey, :close_sandwich]
 ```
 
 ## Installation
