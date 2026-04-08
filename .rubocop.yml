@@ -1,2 +1,87 @@
-inherit_gem:
-  rewind-ruby-style: rubocop.yml
+---
+plugins:
+- rubocop-performance
+- rubocop-rails
+- rubocop-rspec
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 3.2.8
+  NewCops: enable
+  StyleGuideBaseURL: https://github.com/rewindio/ruby-style-configs/
+  Exclude:
+  - ".ebextenstions/**/*"
+  - ".git/**/*"
+  - bin/**/*
+  - certs/**/*
+  - db/**/*
+  - log/**/*
+  - tmp/**/*
+  - vendor/**/*
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Details: 'Add `# frozen_string_literal: true` to the top of the file. Frozen string
+    literals will become the default in a future Ruby version, and we want to make
+    sure we''re ready.'
+  EnforcedStyle: always
+  SupportedStyles:
+  - always
+  - never
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Layout/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/RescueStandardError:
+  Enabled: false
+Style/RedundantSelf:
+  Enabled: false
+Style/DateTime:
+  Enabled: false
+Layout/HashAlignment:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: false
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/AsciiComments:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+Lint/SuppressedException:
+  AllowComments: true
+Lint/Debugger:
+  Enabled: true
+RSpec/MultipleExpectations:
+  Max: 4
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 4
+Rails/UnknownEnv:
+  Environments:
+  - production
+  - staging
+  - development
+  - test
